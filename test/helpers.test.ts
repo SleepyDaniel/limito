@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { toMs } from '../src/duration.ts'
-import { headers } from '../src/index.ts'
+import { headers, limito } from '../src/index.ts'
 
 describe('toMs', () => {
   it('parses units', () => {
@@ -30,6 +30,32 @@ describe('headers', () => {
 
   it('adds retry-after when waiting', () => {
     expect(headers(info, 1500)['retry-after']).toBe('2')
+    expect(headers(info, 0)['retry-after']).toBeUndefined()
     expect(headers(info, Infinity)['retry-after']).toBeUndefined()
+  })
+
+  it('keeps q an integer and scales short windows', () => {
+    expect(headers({ ...info, limit: 10, window: 100 })['ratelimit-policy']).toBe(
+      '"default";q=100;w=1',
+    )
+    expect(headers({ ...info, limit: 1 / 3, window: 1000 })['ratelimit-policy']).toBe(
+      '"default";q=1;w=1',
+    )
+  })
+
+  describe('with a real limiter', () => {
+    beforeEach(() => void vi.useFakeTimers())
+    afterEach(() => void vi.useRealTimers())
+
+    it('matches the README example', () => {
+      const rl = limito({ limit: 100, window: '1m' })
+      for (let i = 0; i < 100; i++) rl('ip')
+      const wait = rl('ip')
+      expect(headers(rl.info('ip'), wait)).toEqual({
+        'ratelimit-policy': '"default";q=100;w=60',
+        ratelimit: '"default";r=0;t=60',
+        'retry-after': '1',
+      })
+    })
   })
 })

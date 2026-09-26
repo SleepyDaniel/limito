@@ -1,21 +1,12 @@
-import { type Duration, toMs } from './duration.ts'
+import type { Duration } from './duration.ts'
+import { type BaseOptions, badCost, type Info, rate } from './options.ts'
 import { type Key, Store } from './store.ts'
 
 export { headers } from './headers.ts'
-export type { Duration, Key }
+export type { Duration, Info, Key }
 
-export interface Options {
-  limit: number
-  window: Duration
-  burst?: number
+export interface Options extends BaseOptions {
   max?: number
-}
-
-export interface Info {
-  limit: number
-  remaining: number
-  reset: number
-  window: number
 }
 
 export interface Limiter {
@@ -27,24 +18,23 @@ export interface Limiter {
   readonly size: number
 }
 
-export const limito = ({ limit, window, burst = limit, max = 1e6 }: Options): Limiter => {
-  const win = toMs(window)
-  if (!(limit > 0 && win > 0 && burst > 0 && max > 0)) {
-    throw new RangeError('limito: limit, window, burst and max must be positive')
-  }
+export const limito = ({ max = 1e6, ...opts }: Options): Limiter => {
+  const { limit, win, burst, step, tau, lim } = rate(opts)
+  const cap = Math.floor(max)
+  if (!(cap > 0)) throw new RangeError('limito: bad max')
 
-  const step = win / limit
-  const tau = burst * step
-  const s = new Store(max, tau)
+  const s = new Store(cap, tau)
   const { keys } = s
+  const t0 = performance.now()
 
   const hit = (key: Key, cost = 1) => {
-    const t = performance.now()
+    if (!(cost >= 0)) return badCost(cost)
+    const t = performance.now() - t0
     const i = keys.get(key)
     let tat = t
     if (i !== undefined && s.tats[i]! > t) tat = s.tats[i]!
     const next = tat + cost * step
-    const wait = next - t - tau
+    const wait = next - t - lim
     if (wait > 0) return cost > burst ? Infinity : Math.ceil(wait)
     if (i === undefined) s.add(key, next, t)
     else s.tats[i] = next
@@ -52,20 +42,21 @@ export const limito = ({ limit, window, burst = limit, max = 1e6 }: Options): Li
   }
 
   const peek = (key: Key, cost = 1) => {
-    const t = performance.now()
+    if (!(cost >= 0)) return badCost(cost)
+    const t = performance.now() - t0
     const i = keys.get(key)
     let tat = t
     if (i !== undefined && s.tats[i]! > t) tat = s.tats[i]!
-    const wait = tat + cost * step - t - tau
+    const wait = tat + cost * step - t - lim
     return wait > 0 ? (cost > burst ? Infinity : Math.ceil(wait)) : 0
   }
 
   const info = (key: Key): Info => {
     const i = keys.get(key)
-    const used = i === undefined ? 0 : Math.max(s.tats[i]! - performance.now(), 0)
+    const used = i === undefined ? 0 : Math.max(s.tats[i]! - (performance.now() - t0), 0)
     return {
       limit,
-      remaining: Math.max(Math.floor(burst - used / step + 1e-9), 0),
+      remaining: Math.max(Math.floor((lim - used) / step), 0),
       reset: Math.ceil(used),
       window: win,
     }

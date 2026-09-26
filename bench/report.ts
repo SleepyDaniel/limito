@@ -48,30 +48,35 @@ for (const runtime of ['node', 'bun']) {
   }
 }
 
+type Mem = { lib: string; keys: number; perKey: number }
 const mem = await load('memory.json')
+const counts = [...new Set<number>(mem.results.map((r: Mem) => r.keys))]
+const k = (n: number) => (n >= 1e6 ? `${n / 1e6}M keys` : `${n / 1000}k keys`)
 await save(
   'memory',
   'Memory per key',
-  `Lower is better, ${mem.keys.toLocaleString('en')} keys on ${cap(mem.runtime)}`,
-  [
-    {
-      title: '',
-      rows: mem.results.map((r: { lib: string; perKey: number }) => ({
-        lib: r.lib,
-        value: r.perKey,
-        label: `${r.perKey.toFixed(0)} B/key`,
-      })),
-    },
-  ],
+  `Lower is better, key strings not included, ${cap(mem.runtime)}`,
+  counts.map((n) => ({
+    title: k(n),
+    rows: mem.results
+      .filter((r: Mem) => r.keys === n)
+      .map((r: Mem) => ({ lib: r.lib, value: r.perKey, label: `${r.perKey.toFixed(0)} B/key` })),
+  })),
 )
 md.push(
   '## Memory',
   '',
-  `Heap + ArrayBuffers after ${mem.keys.toLocaleString('en')} unique keys on ${cap(mem.runtime)}.`,
+  `Heap + ArrayBuffers per unique key on ${cap(mem.runtime)}, not counting the key strings.`,
   '',
+  `| library | ${counts.map(k).join(' | ')} |`,
+  `| --- |${' ---: |'.repeat(counts.length)}`,
 )
-md.push('| library | bytes / key |', '| --- | ---: |')
-for (const r of mem.results) md.push(`| ${r.lib} | ${r.perKey.toFixed(1)} |`)
+for (const lib of new Set<string>(mem.results.map((r: Mem) => r.lib))) {
+  const row = counts.map((n) =>
+    mem.results.find((r: Mem) => r.lib === lib && r.keys === n).perKey.toFixed(1),
+  )
+  md.push(`| ${lib} | ${row.join(' | ')} |`)
+}
 md.push('')
 
 const size = await load('size.json')

@@ -16,7 +16,7 @@ const scenarios: Record<string, (make: (typeof libs)[string]) => Hit> = {
     return () => hit('user:1')
   },
   '100k rotating keys': (make) => {
-    const hit = make(100, WINDOW)
+    const hit = make(1e6, 1e8)
     let i = 0
     return () => hit(keys[i++ % keys.length]!)
   },

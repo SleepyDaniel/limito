@@ -16,7 +16,10 @@
     "gcra",
     "throttle"
   ],
-  "exports": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./redis": "./dist/redis.js"
+  },
   "files": [
     "dist"
   ],
@@ -45,7 +48,9 @@
     "@types/node": "^26.6.3",
     "@vitest/coverage-v8": "^5.0.2",
     "bumpp": "^12.3.0",
+    "ioredis": "^6.0.0",
     "publint": "^0.3.24",
+    "redis": "^6.2.1",
     "size-limit": "^14.0.1",
     "tsdown": "^0.23.0",
     "typescript": "^7.0.2",
@@ -53,7 +58,19 @@
   },
   "size-limit": [
     {
+      "name": "limito",
       "path": "dist/index.js",
+      "import": "{ limito }",
+      "limit": "1 kB"
+    },
+    {
+      "name": "limito + headers",
+      "path": "dist/index.js",
+      "limit": "1.1 kB"
+    },
+    {
+      "name": "limito/redis",
+      "path": "dist/redis.js",
       "limit": "1 kB"
     }
   ]

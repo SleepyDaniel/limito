@@ -11,8 +11,8 @@ text{dominant-baseline:central;fill:#52514e;font-size:13px}
 <text x="0" y="38" class="n">Lower is better, minified + brotli</text>
 <line x1="180" x2="180" y1="56" y2="184" stroke="#e4e3df"/>
 <text x="166" y="79" class="l me" text-anchor="end">limito</text>
-<path d="M180 70h26.0188679245283a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-26.0188679245283z" fill="#2a78d6"/>
-<text x="218.0188679245283" y="79" class="v me">814 B</text>
+<path d="M180 70h30.776157804459693a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-30.776157804459693z" fill="#2a78d6"/>
+<text x="222.7761578044597" y="79" class="v me">943 B</text>
 <text x="166" y="109" class="l" text-anchor="end">rate-limiter-flexible</text>
 <path d="M180 100h74.47684391080617a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-74.47684391080617z" fill="#c3c2b7"/>
 <text x="266.47684391080617" y="109" class="v">2.1 KB</text>

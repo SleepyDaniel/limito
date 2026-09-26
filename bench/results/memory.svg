@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="720" height="192" viewBox="0 0 720 192" font-family="ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="570" viewBox="0 0 720 570" font-family="ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif">
 <style>
 text{dominant-baseline:central;fill:#52514e;font-size:13px}
 .t{fill:#0b0b0b;font-size:18px;font-weight:600}
@@ -8,18 +8,45 @@ text{dominant-baseline:central;fill:#52514e;font-size:13px}
 .me{fill:#0b0b0b;font-weight:600}
 </style>
 <text x="0" y="14" class="t">Memory per key</text>
-<text x="0" y="38" class="n">Lower is better, 1,000,000 keys on Node 24.18.0</text>
-<line x1="180" x2="180" y1="56" y2="184" stroke="#e4e3df"/>
-<text x="166" y="79" class="l me" text-anchor="end">limito</text>
-<path d="M180 70h27.68007419836733a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-27.68007419836733z" fill="#2a78d6"/>
-<text x="219.68007419836732" y="79" class="v me">30 B/key</text>
-<text x="166" y="109" class="l" text-anchor="end">rate-limiter-flexible</text>
-<path d="M180 100h426a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-426z" fill="#c3c2b7"/>
-<text x="618" y="109" class="v">405 B/key</text>
-<text x="166" y="139" class="l" text-anchor="end">express-rate-limit</text>
-<path d="M180 130h162.96984835638605a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-162.96984835638605z" fill="#c3c2b7"/>
-<text x="354.969848356386" y="139" class="v">157 B/key</text>
-<text x="166" y="169" class="l" text-anchor="end">limiter</text>
-<path d="M180 160h273.45569275019363a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-273.45569275019363z" fill="#c3c2b7"/>
-<text x="465.45569275019363" y="169" class="v">262 B/key</text>
+<text x="0" y="38" class="n">Lower is better, key strings not included, Node 24.18.0</text>
+<line x1="180" x2="180" y1="56" y2="562" stroke="#e4e3df"/>
+<text x="0" y="78" class="h">100k keys</text>
+<text x="166" y="113" class="l me" text-anchor="end">limito</text>
+<path d="M180 104h44.53600048734322a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-44.53600048734322z" fill="#2a78d6"/>
+<text x="236.53600048734322" y="113" class="v me">48 B/key</text>
+<text x="166" y="143" class="l" text-anchor="end">rate-limiter-flexible</text>
+<path d="M180 134h426a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-426z" fill="#c3c2b7"/>
+<text x="618" y="143" class="v">422 B/key</text>
+<text x="166" y="173" class="l" text-anchor="end">express-rate-limit</text>
+<path d="M180 164h172.29300903501678a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-172.29300903501678z" fill="#c3c2b7"/>
+<text x="364.2930090350168" y="173" class="v">173 B/key</text>
+<text x="166" y="203" class="l" text-anchor="end">limiter</text>
+<path d="M180 194h279.80086336418265a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-279.80086336418265z" fill="#c3c2b7"/>
+<text x="471.80086336418265" y="203" class="v">278 B/key</text>
+<text x="0" y="250" class="h">300k keys</text>
+<text x="166" y="285" class="l me" text-anchor="end">limito</text>
+<path d="M180 276h58.584781874786216a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-58.584781874786216z" fill="#2a78d6"/>
+<text x="250.58478187478622" y="285" class="v me">63 B/key</text>
+<text x="166" y="315" class="l" text-anchor="end">rate-limiter-flexible</text>
+<path d="M180 306h426a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-426z" fill="#c3c2b7"/>
+<text x="618" y="315" class="v">433 B/key</text>
+<text x="166" y="345" class="l" text-anchor="end">express-rate-limit</text>
+<path d="M180 336h179.62724292970344a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-179.62724292970344z" fill="#c3c2b7"/>
+<text x="371.62724292970347" y="345" class="v">185 B/key</text>
+<text x="166" y="375" class="l" text-anchor="end">limiter</text>
+<path d="M180 366h283.3173429262807a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-283.3173429262807z" fill="#c3c2b7"/>
+<text x="475.3173429262807" y="375" class="v">289 B/key</text>
+<text x="0" y="422" class="h">1M keys</text>
+<text x="166" y="457" class="l me" text-anchor="end">limito</text>
+<path d="M180 448h35.30222779192456a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-35.30222779192456z" fill="#2a78d6"/>
+<text x="227.30222779192457" y="457" class="v me">38 B/key</text>
+<text x="166" y="487" class="l" text-anchor="end">rate-limiter-flexible</text>
+<path d="M180 478h426a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-426z" fill="#c3c2b7"/>
+<text x="618" y="487" class="v">413 B/key</text>
+<text x="166" y="517" class="l" text-anchor="end">express-rate-limit</text>
+<path d="M180 508h168.00060906041807a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-168.00060906041807z" fill="#c3c2b7"/>
+<text x="360.00060906041807" y="517" class="v">165 B/key</text>
+<text x="166" y="547" class="l" text-anchor="end">limiter</text>
+<path d="M180 538h276.3089745157093a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-276.3089745157093z" fill="#c3c2b7"/>
+<text x="468.3089745157093" y="547" class="v">270 B/key</text>
 </svg>
