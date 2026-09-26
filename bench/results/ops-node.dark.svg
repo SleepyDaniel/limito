@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="570" viewBox="0 0 720 570" font-family="ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif">
+<style>
+text{dominant-baseline:central;fill:#c3c2b7;font-size:13px}
+.t{fill:#ffffff;font-size:18px;font-weight:600}
+.n{font-size:13px}
+.h{fill:#ffffff;font-size:14px;font-weight:600}
+.v{font-variant-numeric:tabular-nums}
+.me{fill:#ffffff;font-weight:600}
+</style>
+<text x="0" y="14" class="t">Throughput on Node 24.18.0</text>
+<text x="0" y="38" class="n">Higher is better, Apple M5</text>
+<line x1="180" x2="180" y1="56" y2="562" stroke="#383835"/>
+<text x="0" y="78" class="h">hot key, allowed</text>
+<text x="166" y="113" class="l me" text-anchor="end">limito</text>
+<path d="M180 104h426a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-426z" fill="#3987e5"/>
+<text x="618" y="113" class="v me">53.6M ops/s</text>
+<text x="166" y="143" class="l" text-anchor="end">rate-limiter-flexible</text>
+<path d="M180 134h59.01230138163132a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-59.01230138163132z" fill="#5d5c57"/>
+<text x="251.01230138163132" y="143" class="v">7.9M ops/s</text>
+<text x="166" y="173" class="l" text-anchor="end">express-rate-limit</text>
+<path d="M180 164h136.0304673623384a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-136.0304673623384z" fill="#5d5c57"/>
+<text x="328.0304673623384" y="173" class="v">17.5M ops/s</text>
+<text x="166" y="203" class="l" text-anchor="end">limiter</text>
+<path d="M180 194h152.35097024830338a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-152.35097024830338z" fill="#5d5c57"/>
+<text x="344.3509702483034" y="203" class="v">19.5M ops/s</text>
+<text x="0" y="250" class="h">hot key, blocked</text>
+<text x="166" y="285" class="l me" text-anchor="end">limito</text>
+<path d="M180 276h408.43181584612745a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-408.43181584612745z" fill="#3987e5"/>
+<text x="600.4318158461274" y="285" class="v me">48.4M ops/s</text>
+<text x="166" y="315" class="l" text-anchor="end">rate-limiter-flexible</text>
+<path d="M180 306h12.325972751010632a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-12.325972751010632z" fill="#5d5c57"/>
+<text x="204.32597275101062" y="315" class="v">1.9M ops/s</text>
+<text x="166" y="345" class="l" text-anchor="end">express-rate-limit</text>
+<path d="M180 336h148.84821500905707a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-148.84821500905707z" fill="#5d5c57"/>
+<text x="340.84821500905707" y="345" class="v">17.9M ops/s</text>
+<text x="166" y="375" class="l" text-anchor="end">limiter</text>
+<path d="M180 366h426a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-426z" fill="#5d5c57"/>
+<text x="618" y="375" class="v">50.5M ops/s</text>
+<text x="0" y="422" class="h">100k rotating keys</text>
+<text x="166" y="457" class="l me" text-anchor="end">limito</text>
+<path d="M180 448h426a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-426z" fill="#3987e5"/>
+<text x="618" y="457" class="v me">30.6M ops/s</text>
+<text x="166" y="487" class="l" text-anchor="end">rate-limiter-flexible</text>
+<path d="M180 478h59.3198088433633a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-59.3198088433633z" fill="#5d5c57"/>
+<text x="251.3198088433633" y="487" class="v">4.5M ops/s</text>
+<text x="166" y="517" class="l" text-anchor="end">express-rate-limit</text>
+<path d="M180 508h163.4257826804983a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-163.4257826804983z" fill="#5d5c57"/>
+<text x="355.4257826804983" y="517" class="v">11.9M ops/s</text>
+<text x="166" y="547" class="l" text-anchor="end">limiter</text>
+<path d="M180 538h216.1565940590048a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-216.1565940590048z" fill="#5d5c57"/>
+<text x="408.15659405900476" y="547" class="v">15.7M ops/s</text>
+</svg>

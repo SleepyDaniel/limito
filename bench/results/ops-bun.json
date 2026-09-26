@@ -1,0 +1,97 @@
+{
+  "runtime": "bun 1.4.2",
+  "cpu": "Apple M5",
+  "arch": "arm64-darwin",
+  "versions": {
+    "limito": "0.0.0",
+    "rate-limiter-flexible": "11.2.1",
+    "express-rate-limit": "8.7.0",
+    "limiter": "4.1.0"
+  },
+  "results": [
+    {
+      "scenario": "hot key, allowed",
+      "lib": "limito",
+      "avg": 26.558726889900694,
+      "p99": 34.66796875,
+      "ops": 37652407.21611032
+    },
+    {
+      "scenario": "hot key, allowed",
+      "lib": "rate-limiter-flexible",
+      "avg": 99.11720900021727,
+      "p99": 144.449951171875,
+      "ops": 10089065.36096883
+    },
+    {
+      "scenario": "hot key, allowed",
+      "lib": "express-rate-limit",
+      "avg": 36.490010274990645,
+      "p99": 40.9951171875,
+      "ops": 27404760.712971773
+    },
+    {
+      "scenario": "hot key, allowed",
+      "lib": "limiter",
+      "avg": 55.80438423405415,
+      "p99": 61.95068359375,
+      "ops": 17919738.990503162
+    },
+    {
+      "scenario": "hot key, blocked",
+      "lib": "limito",
+      "avg": 28.251410612744845,
+      "p99": 31.636474609375,
+      "ops": 35396462.63004218
+    },
+    {
+      "scenario": "hot key, blocked",
+      "lib": "rate-limiter-flexible",
+      "avg": 209.82577155618105,
+      "p99": 267.4052734375,
+      "ops": 4765858.80077295
+    },
+    {
+      "scenario": "hot key, blocked",
+      "lib": "express-rate-limit",
+      "avg": 36.47885719214473,
+      "p99": 41.19873046875,
+      "ops": 27413139.47234448
+    },
+    {
+      "scenario": "hot key, blocked",
+      "lib": "limiter",
+      "avg": 28.949200772899346,
+      "p99": 32.572509765625,
+      "ops": 34543267.976370014
+    },
+    {
+      "scenario": "100k rotating keys",
+      "lib": "limito",
+      "avg": 28.555107637498946,
+      "p99": 33.7421875,
+      "ops": 35020004.57132883
+    },
+    {
+      "scenario": "100k rotating keys",
+      "lib": "rate-limiter-flexible",
+      "avg": 140.9144983931623,
+      "p99": 214.884521484375,
+      "ops": 7096501.860368712
+    },
+    {
+      "scenario": "100k rotating keys",
+      "lib": "express-rate-limit",
+      "avg": 46.325170646472706,
+      "p99": 59.234619140625,
+      "ops": 21586536.780003034
+    },
+    {
+      "scenario": "100k rotating keys",
+      "lib": "limiter",
+      "avg": 51.7541453399519,
+      "p99": 72.123046875,
+      "ops": 19322123.733884647
+    }
+  ]
+}

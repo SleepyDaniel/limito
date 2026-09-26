@@ -1,0 +1,28 @@
+{
+  "runtime": "node 24.18.0",
+  "keys": 1000000,
+  "versions": {
+    "limito": "0.0.0",
+    "rate-limiter-flexible": "11.2.1",
+    "express-rate-limit": "8.7.0",
+    "limiter": "4.1.0"
+  },
+  "results": [
+    {
+      "lib": "limito",
+      "perKey": 29.8594
+    },
+    {
+      "lib": "rate-limiter-flexible",
+      "perKey": 405.287624
+    },
+    {
+      "lib": "express-rate-limit",
+      "perKey": 157.373984
+    },
+    {
+      "lib": "limiter",
+      "perKey": 261.510136
+    }
+  ]
+}

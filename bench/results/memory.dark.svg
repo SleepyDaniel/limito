@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="192" viewBox="0 0 720 192" font-family="ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif">
+<style>
+text{dominant-baseline:central;fill:#c3c2b7;font-size:13px}
+.t{fill:#ffffff;font-size:18px;font-weight:600}
+.n{font-size:13px}
+.h{fill:#ffffff;font-size:14px;font-weight:600}
+.v{font-variant-numeric:tabular-nums}
+.me{fill:#ffffff;font-weight:600}
+</style>
+<text x="0" y="14" class="t">Memory per key</text>
+<text x="0" y="38" class="n">Lower is better, 1,000,000 keys on Node 24.18.0</text>
+<line x1="180" x2="180" y1="56" y2="184" stroke="#383835"/>
+<text x="166" y="79" class="l me" text-anchor="end">limito</text>
+<path d="M180 70h27.68007419836733a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-27.68007419836733z" fill="#3987e5"/>
+<text x="219.68007419836732" y="79" class="v me">30 B/key</text>
+<text x="166" y="109" class="l" text-anchor="end">rate-limiter-flexible</text>
+<path d="M180 100h426a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-426z" fill="#5d5c57"/>
+<text x="618" y="109" class="v">405 B/key</text>
+<text x="166" y="139" class="l" text-anchor="end">express-rate-limit</text>
+<path d="M180 130h162.96984835638605a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-162.96984835638605z" fill="#5d5c57"/>
+<text x="354.969848356386" y="139" class="v">157 B/key</text>
+<text x="166" y="169" class="l" text-anchor="end">limiter</text>
+<path d="M180 160h273.45569275019363a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-273.45569275019363z" fill="#5d5c57"/>
+<text x="465.45569275019363" y="169" class="v">262 B/key</text>
+</svg>

@@ -1,0 +1,60 @@
+{
+  "name": "limito",
+  "version": "0.0.0",
+  "description": "Fast, tiny rate limiter for Node, Bun, Deno and the edge",
+  "type": "module",
+  "license": "MIT",
+  "author": "SleepyDaniel",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SleepyDaniel/limito.git"
+  },
+  "keywords": [
+    "rate-limit",
+    "rate-limiter",
+    "ratelimit",
+    "gcra",
+    "throttle"
+  ],
+  "exports": "./dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "bench"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "size": "size-limit",
+    "bench": "bun run build && bun run --cwd bench all",
+    "release": "bumpp",
+    "prepublishOnly": "bun run build"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
+    "@biomejs/biome": "^2.5.14",
+    "@size-limit/preset-small-lib": "^14.0.1",
+    "@types/node": "^26.6.3",
+    "@vitest/coverage-v8": "^5.0.2",
+    "bumpp": "^12.3.0",
+    "publint": "^0.3.24",
+    "size-limit": "^14.0.1",
+    "tsdown": "^0.23.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.2"
+  },
+  "size-limit": [
+    {
+      "path": "dist/index.js",
+      "limit": "1 kB"
+    }
+  ]
+}

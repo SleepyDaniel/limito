@@ -1,0 +1,34 @@
+{
+  "versions": {
+    "limito": "0.0.0",
+    "rate-limiter-flexible": "11.2.1",
+    "express-rate-limit": "8.7.0",
+    "limiter": "4.1.0"
+  },
+  "results": [
+    {
+      "lib": "limito",
+      "min": 1671,
+      "gzip": 897,
+      "brotli": 814
+    },
+    {
+      "lib": "rate-limiter-flexible",
+      "min": 7734,
+      "gzip": 2349,
+      "brotli": 2128
+    },
+    {
+      "lib": "express-rate-limit",
+      "min": 43434,
+      "gzip": 13119,
+      "brotli": 11660
+    },
+    {
+      "lib": "limiter",
+      "min": 4259,
+      "gzip": 1375,
+      "brotli": 1225
+    }
+  ]
+}

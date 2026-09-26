@@ -1,0 +1,20 @@
+{
+  "name": "limito-bench",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "ops": "node --expose-gc ops.ts",
+    "ops:bun": "bun ops.ts",
+    "memory": "node --expose-gc memory.ts",
+    "size": "node size.ts",
+    "report": "node report.ts",
+    "all": "bun run ops && bun run ops:bun && bun run memory && bun run size && bun run report"
+  },
+  "dependencies": {
+    "express-rate-limit": "^8.7.0",
+    "limiter": "^4.1.0",
+    "mitata": "^1.0.34",
+    "rate-limiter-flexible": "^11.2.1",
+    "rolldown": "^1.2.11"
+  }
+}
