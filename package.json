@@ -1,6 +1,6 @@
 {
   "name": "limito",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Fast, tiny rate limiter for Node, Bun, Deno and the edge",
   "type": "module",
   "license": "MIT",
