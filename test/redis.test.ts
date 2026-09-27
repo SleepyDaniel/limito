@@ -29,6 +29,24 @@ it('rejects odd replies and bad cost', async () => {
   await expect(rl.peek('a', Number.NaN)).rejects.toThrow(RangeError)
 })
 
+it('reserves a slot and sleeps once while waiting', async () => {
+  const sent: string[][] = []
+  const rl = limito({
+    limit: 1,
+    window: 1000,
+    send: async (a) => {
+      sent.push(a)
+      return [120, 0, 1000]
+    },
+  })
+  const start = performance.now()
+  await rl.wait('a')
+  expect(performance.now() - start).toBeGreaterThanOrEqual(115)
+  expect(sent).toHaveLength(1)
+  expect(sent[0]![7]).toBe('2')
+  await expect(rl.wait('a', 2)).rejects.toThrow(RangeError)
+})
+
 describe.runIf(url)('redis', async () => {
   const io = new Redis(url!)
   const nr = createClient({ url: url! })
@@ -148,6 +166,24 @@ describe.runIf(url)('redis', async () => {
       const ttl = Number(await send(['PTTL', `${prefix}1000/10/10:a`]))
       expect(ttl).toBeGreaterThan(0)
       expect(ttl).toBeLessThanOrEqual(300)
+    })
+
+    it('waits until a request fits', async () => {
+      const rl = make(10, 1000)
+      const start = performance.now()
+      for (let i = 0; i < 10; i++) await rl('a')
+      await rl.wait('a')
+      const took = performance.now() - start
+      expect(took).toBeGreaterThanOrEqual(95)
+      expect(took).toBeLessThan(500)
+      await expect(rl.wait('a', 11)).rejects.toThrow(RangeError)
+    })
+
+    it('lets waiters through in order', async () => {
+      const rl = make(20, 1000, 1)
+      const order: number[] = []
+      await Promise.all(Array.from({ length: 5 }, (_, i) => rl.wait('a').then(() => order.push(i))))
+      expect(order).toEqual([0, 1, 2, 3, 4])
     })
 
     it('resets a key', async () => {

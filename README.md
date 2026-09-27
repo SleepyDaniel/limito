@@ -47,21 +47,34 @@ if (wait) console.log(`try again in ${wait}ms`)
 
 `rl(key)` returns `0` if the request is allowed, otherwise how many ms until it would be.
 
+### Pacing your own calls
+
+```ts
+const github = limito({ limit: 5000, window: '1h' })
+
+for (const repo of repos) {
+  await github.wait('api')
+  await fetch(`https://api.github.com/repos/${repo}`)
+}
+```
+
+`wait()` resolves once the request fits, so you can also pace your calls to someone else's API. Waiters go through in the order they called, each after one sleep.
+
 ### Hono
 
 ```ts
 import { Hono } from 'hono'
 import { getConnInfo } from 'hono/bun'
-import { limito } from 'limito'
+import { ipKey, limito } from 'limito'
 import { rateLimit } from 'limito/hono'
 
 const app = new Hono()
 const rl = limito({ limit: 100, window: '1m' })
 
-app.use(rateLimit(rl, (c) => getConnInfo(c).remote.address))
+app.use(rateLimit(rl, (c) => ipKey(getConnInfo(c).remote.address)))
 ```
 
-The second argument picks the key. Not on Bun? Import `getConnInfo` from `hono/deno`, `hono/cloudflare-workers` or `@hono/node-server/conninfo` instead. Behind a proxy that address is the proxy's, so key on the header your proxy sets instead. If your app has typed variables, pass your env type to get a typed `c`: `rateLimit<AppEnv>(rl, (c) => c.get('user').id)`.
+The second argument picks the key. [`ipKey`](#ipkeyip) keys IPv6 clients by their /64. Not on Bun? Import `getConnInfo` from `hono/deno`, `hono/cloudflare-workers` or `@hono/node-server/conninfo` instead. Behind a proxy that address is the proxy's, so key on the header your proxy sets instead. If your app has typed variables, pass your env type to get a typed `c`: `rateLimit<AppEnv>(rl, (c) => c.get('user').id)`.
 
 ### Express
 
@@ -76,7 +89,7 @@ const rl = limito({ limit: 100, window: '1m' })
 app.use(rateLimit(rl))
 ```
 
-Limits by `req.ip`. Behind a proxy, set `trust proxy` to the number of proxies in front of your app, like `app.set('trust proxy', 1)`. Setting it to `true` lets clients pick their own IP with `X-Forwarded-For`. To limit by something else, pass a key function: `rateLimit(rl, (req) => req.get('x-api-key'))`.
+Limits by `ipKey(req.ip)`. Behind a proxy, set `trust proxy` to the number of proxies in front of your app, like `app.set('trust proxy', 1)`. Setting it to `true` lets clients pick their own IP with `X-Forwarded-For`. To limit by something else, pass a key function: `rateLimit(rl, (req) => req.get('x-api-key'))`.
 
 Blocked requests get a 429 with the `RateLimit`, `RateLimit-Policy` and `Retry-After` headers. If the key function returns `undefined`, the request fails with an error instead of sharing one bucket with everyone else. Both take the [Redis limiter](#redis) too. For your own response, call `rl()` and [`headers()`](#headersinfo-wait) yourself.
 
@@ -139,6 +152,7 @@ Keys can be strings or numbers. When the store hits `max`, expired keys go first
 | --- | --- | --- |
 | `rl(key, cost = 1)` | `number` | `0` if allowed, else ms to wait. `Infinity` if `cost` is bigger than `burst`, throws if it's negative or `NaN` |
 | `rl.peek(key, cost = 1)` | `number` | same as `rl()` but doesn't count the request |
+| `rl.wait(key, cost = 1)` | `Promise<void>` | resolves once the request fits and counts it. Rejects if `cost` is bigger than `burst`, negative or `NaN` |
 | `rl.info(key)` | `{ limit, remaining, reset, window }` | `reset` is ms until the key is fully refilled |
 | `rl.reset(key)` | `void` | forget one key |
 | `rl.clear()` | `void` | forget all keys |
@@ -153,11 +167,15 @@ Takes `limit`, `window` and `burst` like above, plus:
 | `send` | `(args: [string, ...string[]]) => Promise<unknown>` | | runs a raw Redis command |
 | `prefix` | `string` | `'limito:'` | keys are stored as `<prefix><window>/<limit>/<burst>:<key>` |
 
-`rl()`, `rl.peek()`, `rl.info()` and `rl.reset()` work the same but return promises.
+`rl()`, `rl.peek()`, `rl.wait()`, `rl.info()` and `rl.reset()` work the same but return promises.
 
 ### `rateLimit(rl, key)` from `limito/hono` and `limito/express`
 
-Takes any limito limiter and a function that returns the key for a request, or a promise of it. In Express `key` is optional and defaults to `req.ip`.
+Takes any limito limiter and a function that returns the key for a request, or a promise of it. In Express `key` is optional and defaults to `ipKey(req.ip)`.
+
+### `ipKey(ip)`
+
+Returns IPv4 addresses as they are and IPv6 addresses as their /64 network, like `2001:db8:0:0::/64`. Most IPv6 users get at least a /64, so without this they could rotate addresses and never hit the limit. Some hosts put several customers in one /64, and they share a limit. IPv4-mapped addresses like `::ffff:1.2.3.4` become `1.2.3.4`, `undefined` stays `undefined` and anything malformed comes back unchanged.
 
 ### `headers(info, wait?)`
 

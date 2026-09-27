@@ -25,6 +25,7 @@
   "files": [
     "dist"
   ],
+  "sideEffects": false,
   "engines": {
     "node": ">=22"
   },
@@ -85,9 +86,9 @@
       "limit": "1 kB"
     },
     {
-      "name": "limito + headers",
+      "name": "limito, all exports",
       "path": "dist/index.js",
-      "limit": "1.1 kB"
+      "limit": "1.45 kB"
     },
     {
       "name": "limito/redis",
@@ -102,7 +103,7 @@
     {
       "name": "limito/express",
       "path": "dist/express.js",
-      "limit": "400 B"
+      "limit": "700 B"
     }
   ]
 }

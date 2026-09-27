@@ -5,10 +5,10 @@ local used = (tonumber(redis.call('GET', KEYS[1])) or now) - now
 if used < 0 then used = 0 end
 local new = used + cost * step
 local wait = new - lim
-if wait <= 0 and ARGV[4] == '1' then
+if ARGV[4] == '2' or (wait <= 0 and ARGV[4] == '1') then
   redis.call('SET', KEYS[1], string.format('%.17g', now + new), 'PX', math.max(math.ceil(new), 1))
   used = new
 end
 return {wait > 0 and math.ceil(wait) or 0, math.max(math.floor((lim - used) / step), 0), math.ceil(used)}`
 
-export const SHA = 'b5eaca5abdadaf1fd3ddbf5df7e7e97cfb096f62'
+export const SHA = 'a40955f243eb7a5cca2eda02fa5e6464dbfe6fb2'

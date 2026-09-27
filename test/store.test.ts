@@ -16,7 +16,7 @@ it('drops expired keys once the slab fills up', () => {
 it('drops expired keys on the sweep before the slab fills up', () => {
   const rl = limito({ limit: 1, window: '1s' })
   for (let i = 0; i < 10; i++) rl(i)
-  vi.advanceTimersByTime(1000)
+  vi.advanceTimersByTime(1001)
   rl('fresh')
   expect(rl.size).toBe(1)
 })

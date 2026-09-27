@@ -1,7 +1,7 @@
 {
   "runtime": "node 24.18.0",
   "versions": {
-    "limito": "0.1.0",
+    "limito": "0.3.0",
     "rate-limiter-flexible": "11.2.1",
     "express-rate-limit": "8.7.0",
     "limiter": "4.1.0"
@@ -10,62 +10,62 @@
     {
       "lib": "limito",
       "keys": 100000,
-      "perKey": 47.58232
+      "perKey": 47.57792
     },
     {
       "lib": "rate-limiter-flexible",
       "keys": 100000,
-      "perKey": 421.55096
+      "perKey": 421.51888
     },
     {
       "lib": "express-rate-limit",
       "keys": 100000,
-      "perKey": 172.82904
+      "perKey": 172.79632
     },
     {
       "lib": "limiter",
       "keys": 100000,
-      "perKey": 278.22448
+      "perKey": 278.19176
     },
     {
       "lib": "limito",
       "keys": 300000,
-      "perKey": 63.04725333333333
+      "perKey": 63.045226666666665
     },
     {
       "lib": "rate-limiter-flexible",
       "keys": 300000,
-      "perKey": 433.17749333333336
+      "perKey": 433.2062666666667
     },
     {
       "lib": "express-rate-limit",
       "keys": 300000,
-      "perKey": 184.98416
+      "perKey": 184.97325333333333
     },
     {
       "lib": "limiter",
       "keys": 300000,
-      "perKey": 289.44048
+      "perKey": 289.42957333333334
     },
     {
       "lib": "limito",
       "keys": 1000000,
-      "perKey": 37.788344
+      "perKey": 37.787936
     },
     {
       "lib": "rate-limiter-flexible",
       "keys": 1000000,
-      "perKey": 413.436816
+      "perKey": 413.466064
     },
     {
       "lib": "express-rate-limit",
       "keys": 1000000,
-      "perKey": 165.375312
+      "perKey": 165.37204
     },
     {
       "lib": "limiter",
       "keys": 1000000,
-      "perKey": 269.511744
+      "perKey": 269.508472
     }
   ]
 }

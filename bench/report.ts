@@ -90,7 +90,12 @@ await save('size', 'Bundle size', 'Lower is better, minified + brotli', [
     })),
   },
 ])
-md.push('## Bundle size', '', 'Bundled with rolldown, minified, Node built-ins external.', '')
+md.push(
+  '## Bundle size',
+  '',
+  'Bundled with rolldown, minified, annotation comments stripped (same as size-limit), Node built-ins external.',
+  '',
+)
 md.push('| library | min | gzip | brotli |', '| --- | ---: | ---: | ---: |')
 for (const r of size.results)
   md.push(`| ${r.lib} | ${fmtBytes(r.min)} | ${fmtBytes(r.gzip)} | ${fmtBytes(r.brotli)} |`)

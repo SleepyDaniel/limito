@@ -18,7 +18,6 @@ export interface Rate {
   win: number
   burst: number
   step: number
-  tau: number
   lim: number
 }
 
@@ -28,10 +27,19 @@ export const rate = ({ limit, window, burst = Math.max(limit, 1) }: BaseOptions)
     throw new RangeError('limito: bad limit, window or burst')
   }
   const step = win / limit
-  const tau = burst * step
-  return { limit, win, burst, step, tau, lim: tau + Math.min(1e-3, step * 1e-3) }
+  return { limit, win, burst, step, lim: burst * step + Math.min(1e-3, step * 1e-3) }
 }
 
 export const badCost = (cost: number): never => {
   throw new RangeError(`limito: bad cost ${cost}`)
+}
+
+export const waitFor = async (wait: number | Promise<number>): Promise<void> => {
+  let ms = await wait
+  if (ms === Infinity) throw new RangeError('limito: cost > burst')
+  while (ms > 0) {
+    const d = Math.min(ms, 2e9)
+    await new Promise((r) => setTimeout(r, d))
+    ms -= d
+  }
 }

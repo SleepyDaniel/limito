@@ -1,4 +1,4 @@
-import { type BaseOptions, badCost, type Info, rate } from './options.ts'
+import { type BaseOptions, badCost, type Info, rate, waitFor } from './options.ts'
 import { SCRIPT, SHA } from './script.ts'
 import type { Key } from './store.ts'
 
@@ -12,6 +12,7 @@ export interface RedisOptions extends BaseOptions {
 export interface RedisLimiter {
   (key: Key, cost?: number): Promise<number>
   peek(key: Key, cost?: number): Promise<number>
+  wait(key: Key, cost?: number): Promise<void>
   info(key: Key): Promise<Info>
   reset(key: Key): Promise<void>
 }
@@ -22,18 +23,9 @@ export const limito = ({ send, prefix = 'limito:', ...opts }: RedisOptions): Red
   const s = String(step)
   const l = String(lim)
 
-  const run = async (key: Key, cost: number, write: boolean) => {
+  const run = async (key: Key, cost: number, mode: string) => {
     if (!(cost >= 0)) badCost(cost)
-    const cmd: [string, ...string[]] = [
-      'EVALSHA',
-      SHA,
-      '1',
-      ns + key,
-      s,
-      l,
-      String(cost),
-      write ? '1' : '0',
-    ]
+    const cmd: [string, ...string[]] = ['EVALSHA', SHA, '1', ns + key, s, l, String(cost), mode]
     let res: unknown
     try {
       res = await send(cmd)
@@ -47,14 +39,14 @@ export const limito = ({ send, prefix = 'limito:', ...opts }: RedisOptions): Red
     return res.map(Number) as [number, number, number]
   }
 
-  const hit = async (key: Key, cost = 1) =>
-    cost > burst ? Infinity : (await run(key, cost, true))[0]
+  const take = async (key: Key, cost: number, mode: string) =>
+    cost > burst ? Infinity : (await run(key, cost, mode))[0]
 
-  return Object.assign(hit, {
-    peek: async (key: Key, cost = 1) =>
-      cost > burst ? Infinity : (await run(key, cost, false))[0],
+  return Object.assign((key: Key, cost = 1) => take(key, cost, '1'), {
+    peek: (key: Key, cost = 1) => take(key, cost, '0'),
+    wait: async (key: Key, cost = 1) => waitFor(take(key, cost, '2')),
     info: async (key: Key): Promise<Info> => {
-      const [, remaining, reset] = await run(key, 0, false)
+      const [, remaining, reset] = await run(key, 0, '0')
       return { limit, remaining, reset, window: win }
     },
     reset: async (key: Key) => void (await send(['DEL', ns + key])),

@@ -1,6 +1,6 @@
 {
   "versions": {
-    "limito": "0.1.0",
+    "limito": "0.3.0",
     "rate-limiter-flexible": "11.2.1",
     "express-rate-limit": "8.7.0",
     "limiter": "4.1.0"
@@ -8,27 +8,27 @@
   "results": [
     {
       "lib": "limito",
-      "min": 2012,
-      "gzip": 1016,
-      "brotli": 943
+      "min": 2053,
+      "gzip": 1076,
+      "brotli": 994
     },
     {
       "lib": "rate-limiter-flexible",
-      "min": 7734,
-      "gzip": 2349,
-      "brotli": 2128
+      "min": 7618,
+      "gzip": 2320,
+      "brotli": 2099
     },
     {
       "lib": "express-rate-limit",
-      "min": 43434,
-      "gzip": 13119,
-      "brotli": 11660
+      "min": 43048,
+      "gzip": 13088,
+      "brotli": 11604
     },
     {
       "lib": "limiter",
-      "min": 4259,
-      "gzip": 1375,
-      "brotli": 1225
+      "min": 4243,
+      "gzip": 1359,
+      "brotli": 1216
     }
   ]
 }

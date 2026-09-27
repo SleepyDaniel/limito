@@ -12,41 +12,41 @@ text{dominant-baseline:central;fill:#52514e;font-size:13px}
 <line x1="180" x2="180" y1="56" y2="562" stroke="#e4e3df"/>
 <text x="0" y="78" class="h">100k keys</text>
 <text x="166" y="113" class="l me" text-anchor="end">limito</text>
-<path d="M180 104h44.53600048734322a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-44.53600048734322z" fill="#2a78d6"/>
-<text x="236.53600048734322" y="113" class="v me">48 B/key</text>
+<path d="M180 104h44.535205825181535a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-44.535205825181535z" fill="#2a78d6"/>
+<text x="236.53520582518155" y="113" class="v me">48 B/key</text>
 <text x="166" y="143" class="l" text-anchor="end">rate-limiter-flexible</text>
 <path d="M180 134h426a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-426z" fill="#c3c2b7"/>
 <text x="618" y="143" class="v">422 B/key</text>
 <text x="166" y="173" class="l" text-anchor="end">express-rate-limit</text>
-<path d="M180 164h172.29300903501678a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-172.29300903501678z" fill="#c3c2b7"/>
-<text x="364.2930090350168" y="173" class="v">173 B/key</text>
+<path d="M180 164h172.27304760346678a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-172.27304760346678z" fill="#c3c2b7"/>
+<text x="364.2730476034668" y="173" class="v">173 B/key</text>
 <text x="166" y="203" class="l" text-anchor="end">limiter</text>
-<path d="M180 194h279.80086336418265a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-279.80086336418265z" fill="#c3c2b7"/>
-<text x="471.80086336418265" y="203" class="v">278 B/key</text>
+<path d="M180 194h279.78908389583876a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-279.78908389583876z" fill="#c3c2b7"/>
+<text x="471.78908389583876" y="203" class="v">278 B/key</text>
 <text x="0" y="250" class="h">300k keys</text>
 <text x="166" y="285" class="l me" text-anchor="end">limito</text>
-<path d="M180 276h58.584781874786216a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-58.584781874786216z" fill="#2a78d6"/>
-<text x="250.58478187478622" y="285" class="v me">63 B/key</text>
+<path d="M180 276h58.57861335954819a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-58.57861335954819z" fill="#2a78d6"/>
+<text x="250.5786133595482" y="285" class="v me">63 B/key</text>
 <text x="166" y="315" class="l" text-anchor="end">rate-limiter-flexible</text>
 <path d="M180 306h426a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-426z" fill="#c3c2b7"/>
 <text x="618" y="315" class="v">433 B/key</text>
 <text x="166" y="345" class="l" text-anchor="end">express-rate-limit</text>
-<path d="M180 336h179.62724292970344a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-179.62724292970344z" fill="#c3c2b7"/>
-<text x="371.62724292970347" y="345" class="v">185 B/key</text>
+<path d="M180 336h179.60422056067517a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-179.60422056067517z" fill="#c3c2b7"/>
+<text x="371.6042205606752" y="345" class="v">185 B/key</text>
 <text x="166" y="375" class="l" text-anchor="end">limiter</text>
-<path d="M180 366h283.3173429262807a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-283.3173429262807z" fill="#c3c2b7"/>
-<text x="475.3173429262807" y="375" class="v">289 B/key</text>
+<path d="M180 366h283.28743351512a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-283.28743351512z" fill="#c3c2b7"/>
+<text x="475.28743351512" y="375" class="v">289 B/key</text>
 <text x="0" y="422" class="h">1M keys</text>
 <text x="166" y="457" class="l me" text-anchor="end">limito</text>
-<path d="M180 448h35.30222779192456a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-35.30222779192456z" fill="#2a78d6"/>
-<text x="227.30222779192457" y="457" class="v me">38 B/key</text>
+<path d="M180 448h35.29902329299751a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-35.29902329299751z" fill="#2a78d6"/>
+<text x="227.2990232929975" y="457" class="v me">38 B/key</text>
 <text x="166" y="487" class="l" text-anchor="end">rate-limiter-flexible</text>
 <path d="M180 478h426a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-426z" fill="#c3c2b7"/>
 <text x="618" y="487" class="v">413 B/key</text>
 <text x="166" y="517" class="l" text-anchor="end">express-rate-limit</text>
-<path d="M180 508h168.00060906041807a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-168.00060906041807z" fill="#c3c2b7"/>
-<text x="360.00060906041807" y="517" class="v">165 B/key</text>
+<path d="M180 508h167.98503913975392a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-167.98503913975392z" fill="#c3c2b7"/>
+<text x="359.9850391397539" y="517" class="v">165 B/key</text>
 <text x="166" y="547" class="l" text-anchor="end">limiter</text>
-<path d="M180 538h276.3089745157093a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-276.3089745157093z" fill="#c3c2b7"/>
-<text x="468.3089745157093" y="547" class="v">270 B/key</text>
+<path d="M180 538h276.2857430156589a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-276.2857430156589z" fill="#c3c2b7"/>
+<text x="468.2857430156589" y="547" class="v">270 B/key</text>
 </svg>

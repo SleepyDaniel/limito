@@ -97,7 +97,7 @@ describe('express', () => {
   const get = (path: string, headers: Record<string, string> = {}) =>
     fetch(base + path, { headers })
 
-  it('limits by req.ip by default', async () => {
+  it('limits by IP by default', async () => {
     const ip = { 'x-forwarded-for': '1.2.3.4' }
     expect((await get('/ip', ip)).status).toBe(200)
 
@@ -110,6 +110,12 @@ describe('express', () => {
     expect(res.headers.get('ratelimit-policy')).toBe('"default";q=1;w=60')
 
     expect((await get('/ip', { 'x-forwarded-for': '5.6.7.8' })).status).toBe(200)
+  })
+
+  it('groups IPv6 clients by /64', async () => {
+    expect((await get('/ip', { 'x-forwarded-for': '2001:db8::1' })).status).toBe(200)
+    expect((await get('/ip', { 'x-forwarded-for': '2001:db8::ffff' })).status).toBe(429)
+    expect((await get('/ip', { 'x-forwarded-for': '2001:db8:0:1::1' })).status).toBe(200)
   })
 
   it('uses a custom key', async () => {

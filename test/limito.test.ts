@@ -81,6 +81,72 @@ describe('limito', () => {
     expect(rl.info('a')).toEqual({ limit: 4, remaining: 4, reset: 0, window: 4000 })
   })
 
+  it('waits until a request fits', async () => {
+    const rl = limito({ limit: 2, window: '2s' })
+    await rl.wait('a')
+    await rl.wait('a')
+    let done = false
+    const p = rl.wait('a').then(() => {
+      done = true
+    })
+    await vi.advanceTimersByTimeAsync(999)
+    expect(done).toBe(false)
+    await vi.advanceTimersByTimeAsync(1)
+    await p
+    expect(done).toBe(true)
+    expect(rl('a')).toBeGreaterThan(0)
+  })
+
+  it('lets waiters through one step apart', async () => {
+    const rl = limito({ limit: 10, window: '1s', burst: 1 })
+    const times: number[] = []
+    const all = Promise.all(
+      Array.from({ length: 5 }, () => rl.wait('a').then(() => times.push(performance.now()))),
+    )
+    await vi.advanceTimersByTimeAsync(1000)
+    await all
+    expect(times.map((t) => t - times[0]!)).toEqual([0, 100, 200, 300, 400])
+  })
+
+  it('serves waiters in order with one timer each', async () => {
+    const rl = limito({ limit: 10, window: '1s', burst: 5 })
+    const timers = vi.spyOn(globalThis, 'setTimeout')
+    const order: string[] = []
+    const all = Promise.all(
+      ['a', 'b', 'heavy', 'c'].map((n) =>
+        rl.wait('k', n === 'heavy' ? 5 : 1).then(() => order.push(n)),
+      ),
+    )
+    await vi.advanceTimersByTimeAsync(2000)
+    await all
+    expect(order).toEqual(['a', 'b', 'heavy', 'c'])
+    expect(timers).toHaveBeenCalledTimes(2)
+    timers.mockRestore()
+  })
+
+  it('does not spin on waits longer than a timer can hold', async () => {
+    const rl = limito({ limit: 1, window: '30d' })
+    await rl.wait('a')
+    const timers = vi.spyOn(globalThis, 'setTimeout')
+    let done = false
+    const p = rl.wait('a').then(() => {
+      done = true
+    })
+    await vi.advanceTimersByTimeAsync(29 * 864e5)
+    expect(done).toBe(false)
+    await vi.advanceTimersByTimeAsync(864e5)
+    await p
+    expect(done).toBe(true)
+    expect(timers).toHaveBeenCalledTimes(2)
+    timers.mockRestore()
+  })
+
+  it('refuses to wait for a cost that never fits', async () => {
+    const rl = limito({ limit: 5, window: '5s' })
+    await expect(rl.wait('a', 6)).rejects.toThrow(RangeError)
+    await expect(rl.wait('a', -1)).rejects.toThrow(RangeError)
+  })
+
   it('resets and clears', () => {
     const rl = limito({ limit: 1, window: '1h' })
     rl('a')

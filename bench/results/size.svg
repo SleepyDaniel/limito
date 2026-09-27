@@ -11,15 +11,15 @@ text{dominant-baseline:central;fill:#52514e;font-size:13px}
 <text x="0" y="38" class="n">Lower is better, minified + brotli</text>
 <line x1="180" x2="180" y1="56" y2="184" stroke="#e4e3df"/>
 <text x="166" y="79" class="l me" text-anchor="end">limito</text>
-<path d="M180 70h30.776157804459693a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-30.776157804459693z" fill="#2a78d6"/>
-<text x="222.7761578044597" y="79" class="v me">943 B</text>
+<path d="M180 70h32.83385039641503a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-32.83385039641503z" fill="#2a78d6"/>
+<text x="224.83385039641502" y="79" class="v me">994 B</text>
 <text x="166" y="109" class="l" text-anchor="end">rate-limiter-flexible</text>
-<path d="M180 100h74.47684391080617a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-74.47684391080617z" fill="#c3c2b7"/>
-<text x="266.47684391080617" y="109" class="v">2.1 KB</text>
+<path d="M180 100h73.78093760772148a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-73.78093760772148z" fill="#c3c2b7"/>
+<text x="265.7809376077215" y="109" class="v">2.0 KB</text>
 <text x="166" y="139" class="l" text-anchor="end">express-rate-limit</text>
 <path d="M180 130h426a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-426z" fill="#c3c2b7"/>
-<text x="618" y="139" class="v">11.4 KB</text>
+<text x="618" y="139" class="v">11.3 KB</text>
 <text x="166" y="169" class="l" text-anchor="end">limiter</text>
-<path d="M180 160h41.17581475128645a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-41.17581475128645z" fill="#c3c2b7"/>
-<text x="233.17581475128645" y="169" class="v">1.2 KB</text>
+<path d="M180 160h41.06032402619786a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-41.06032402619786z" fill="#c3c2b7"/>
+<text x="233.06032402619786" y="169" class="v">1.2 KB</text>
 </svg>

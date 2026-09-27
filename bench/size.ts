@@ -24,7 +24,11 @@ for (const [lib, code] of Object.entries(entries)) {
     external: [...builtinModules, /^node:/],
     logLevel: 'silent',
   })
-  const { output } = await bundle.generate({ format: 'esm', minify: true })
+  const { output } = await bundle.generate({
+    format: 'esm',
+    minify: true,
+    comments: { annotation: false },
+  })
   const buf = Buffer.from(output[0].code)
   const r = {
     lib,
