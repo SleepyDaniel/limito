@@ -11,5 +11,11 @@
       "preset": "recommended",
       "style": { "noNonNullAssertion": "off" }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["src/hono.ts"],
+      "linter": { "rules": { "suspicious": { "noExplicitAny": "off" } } }
+    }
+  ]
 }

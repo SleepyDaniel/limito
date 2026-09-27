@@ -18,13 +18,31 @@
   ],
   "exports": {
     ".": "./dist/index.js",
-    "./redis": "./dist/redis.js"
+    "./redis": "./dist/redis.js",
+    "./hono": "./dist/hono.js",
+    "./express": "./dist/express.js"
   },
   "files": [
     "dist"
   ],
   "engines": {
     "node": ">=22"
+  },
+  "peerDependencies": {
+    "@types/express": "4 || 5",
+    "express": "4 || 5",
+    "hono": "^4"
+  },
+  "peerDependenciesMeta": {
+    "@types/express": {
+      "optional": true
+    },
+    "express": {
+      "optional": true
+    },
+    "hono": {
+      "optional": true
+    }
   },
   "workspaces": [
     "bench"
@@ -45,9 +63,12 @@
     "@arethetypeswrong/cli": "^0.18.5",
     "@biomejs/biome": "^2.5.14",
     "@size-limit/preset-small-lib": "^14.0.1",
+    "@types/express": "^5.0.6",
     "@types/node": "^26.6.3",
     "@vitest/coverage-v8": "^5.0.2",
     "bumpp": "^12.3.0",
+    "express": "^5.2.1",
+    "hono": "^4.13.9",
     "ioredis": "^6.0.0",
     "publint": "^0.3.24",
     "redis": "^6.2.1",
@@ -72,6 +93,16 @@
       "name": "limito/redis",
       "path": "dist/redis.js",
       "limit": "1 kB"
+    },
+    {
+      "name": "limito/hono",
+      "path": "dist/hono.js",
+      "limit": "400 B"
+    },
+    {
+      "name": "limito/express",
+      "path": "dist/express.js",
+      "limit": "400 B"
     }
   ]
 }

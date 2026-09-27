@@ -6,7 +6,6 @@
   <a href="https://www.npmjs.com/package/limito"><img alt="npm" src="https://shieldcn.dev/npm/limito.svg" /></a>
   <a href="https://github.com/SleepyDaniel/limito"><img alt="stars" src="https://shieldcn.dev/github/SleepyDaniel/limito/stars.svg" /></a>
   <a href="https://www.npmjs.com/package/limito"><img alt="downloads" src="https://shieldcn.dev/npm/dm/limito.svg" /></a>
-  <a href="https://github.com/SleepyDaniel/limito/releases"><img alt="release" src="https://shieldcn.dev/github/SleepyDaniel/limito/release.svg" /></a>
 </p>
 
 <h1 align="center">limito</h1>
@@ -20,8 +19,8 @@ Rate limiter for JavaScript. It's under 1 KB, has zero dependencies and works on
 
 ## Why limito
 
-- **Fast:** on Node it's 2-3x faster than limiter and express-rate-limit and 6-7x faster than rate-limiter-flexible. See the [benchmarks](./bench/results/README.md).
-- **Light on memory:** 40 to 65 bytes per key, 3 to 11 times less than the others.
+- **Fast:** on Node it's up to 3x faster than limiter and express-rate-limit and 6x or more faster than rate-limiter-flexible. See the [benchmarks](./bench/results/README.md).
+- **Light on memory:** 38 to 63 bytes per key, 3 to 11 times less than the others.
 - **No timers, no garbage:** nothing runs in the background, and checking a known key doesn't allocate.
 - **Redis:** `limito/redis` shares limits between servers and works with any client.
 
@@ -53,37 +52,33 @@ if (wait) console.log(`try again in ${wait}ms`)
 ```ts
 import { Hono } from 'hono'
 import { getConnInfo } from 'hono/bun'
-import { headers, limito } from 'limito'
+import { limito } from 'limito'
+import { rateLimit } from 'limito/hono'
 
 const app = new Hono()
 const rl = limito({ limit: 100, window: '1m' })
 
-app.use(async (c, next) => {
-  const ip = getConnInfo(c).remote.address ?? 'anon'
-  const wait = rl(ip)
-  if (wait) return c.text('Too many requests', 429, headers(rl.info(ip), wait))
-  await next()
-})
+app.use(rateLimit(rl, (c) => getConnInfo(c).remote.address))
 ```
 
-Not on Bun? Import `getConnInfo` from `hono/deno`, `hono/cloudflare-workers` or `@hono/node-server/conninfo` instead.
+The second argument picks the key. Not on Bun? Import `getConnInfo` from `hono/deno`, `hono/cloudflare-workers` or `@hono/node-server/conninfo` instead. Behind a proxy that address is the proxy's, so key on the header your proxy sets instead. If your app has typed variables, pass your env type to get a typed `c`: `rateLimit<AppEnv>(rl, (c) => c.get('user').id)`.
 
 ### Express
 
 ```ts
 import express from 'express'
-import { headers, limito } from 'limito'
+import { limito } from 'limito'
+import { rateLimit } from 'limito/express'
 
 const app = express()
 const rl = limito({ limit: 100, window: '1m' })
 
-app.use((req, res, next) => {
-  const ip = req.ip ?? 'anon'
-  const wait = rl(ip)
-  if (!wait) return next()
-  res.set(headers(rl.info(ip), wait)).status(429).send('Too many requests')
-})
+app.use(rateLimit(rl))
 ```
+
+Limits by `req.ip`. Behind a proxy, set `trust proxy` to the number of proxies in front of your app, like `app.set('trust proxy', 1)`. Setting it to `true` lets clients pick their own IP with `X-Forwarded-For`. To limit by something else, pass a key function: `rateLimit(rl, (req) => req.get('x-api-key'))`.
+
+Blocked requests get a 429 with the `RateLimit`, `RateLimit-Policy` and `Retry-After` headers. If the key function returns `undefined`, the request fails with an error instead of sharing one bucket with everyone else. Both take the [Redis limiter](#redis) too. For your own response, call `rl()` and [`headers()`](#headersinfo-wait) yourself.
 
 ### Redis
 
@@ -160,12 +155,19 @@ Takes `limit`, `window` and `burst` like above, plus:
 
 `rl()`, `rl.peek()`, `rl.info()` and `rl.reset()` work the same but return promises.
 
+### `rateLimit(rl, key)` from `limito/hono` and `limito/express`
+
+Takes any limito limiter and a function that returns the key for a request, or a promise of it. In Express `key` is optional and defaults to `req.ip`.
+
 ### `headers(info, wait?)`
 
 Turns `rl.info()` into headers from [draft-ietf-httpapi-ratelimit-headers](https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/). `Retry-After` is added when `wait` is a positive, finite number, so you can pass `rl()`'s result straight in.
 
+With `limit: 100, window: '1m'` and the limit used up:
+
 ```ts
-headers(rl.info(ip), wait)
+const wait = rl('user:42')
+headers(rl.info('user:42'), wait)
 // { 'ratelimit-policy': '"default";q=100;w=60', ratelimit: '"default";r=0;t=60', 'retry-after': '1' }
 ```
 
