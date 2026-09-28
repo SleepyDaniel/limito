@@ -41,13 +41,28 @@ it('shrinks back after a spike', () => {
   expect(rl.size).toBeLessThan(1000)
 })
 
-it('evicts oldest keys past max', () => {
+it('evicts first seen keys past max when they tie', () => {
   const rl = limito({ limit: 1, window: '1h', max: 100 })
   for (let i = 0; i < 1000; i++) rl(i)
   expect(rl.size).toBeLessThanOrEqual(100)
   expect(rl.size).toBeGreaterThanOrEqual(75)
   expect(rl(999)).toBeGreaterThan(0)
   expect(rl(0)).toBe(0)
+})
+
+it('evicts the keys closest to being refilled past max', () => {
+  const rl = limito({ limit: 10, window: '10s', max: 100 })
+  for (let i = 0; i < 100; i++) rl(i, (i % 4) + 1)
+  rl('new')
+  expect(rl.size).toBe(76)
+  for (let i = 0; i < 100; i++) expect(rl.info(i).remaining).toBe(i % 4 ? 9 - (i % 4) : 10)
+})
+
+it('keeps a blocked key through a flood of new keys', () => {
+  const rl = limito({ limit: 5, window: '15m', max: 1000 })
+  for (let i = 0; i < 5; i++) rl('admin')
+  for (let i = 0; i < 100_000; i++) rl(`junk${i}`)
+  expect(rl('admin')).toBeGreaterThan(0)
 })
 
 it('keeps live keys when a sweep runs below max', () => {

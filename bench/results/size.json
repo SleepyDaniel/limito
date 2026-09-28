@@ -1,6 +1,6 @@
 {
   "versions": {
-    "limito": "0.3.0",
+    "limito": "0.4.0",
     "rate-limiter-flexible": "11.2.1",
     "express-rate-limit": "8.7.0",
     "limiter": "4.1.0"
@@ -8,9 +8,9 @@
   "results": [
     {
       "lib": "limito",
-      "min": 2053,
-      "gzip": 1076,
-      "brotli": 994
+      "min": 2236,
+      "gzip": 1165,
+      "brotli": 1069
     },
     {
       "lib": "rate-limiter-flexible",

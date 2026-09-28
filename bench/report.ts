@@ -14,7 +14,18 @@ const cap = (s: string) => s[0]!.toUpperCase() + s.slice(1)
 const fmtOps = (n: number) => `${(n / 1e6).toFixed(1)}M ops/s`
 const fmtBytes = (n: number) => (n >= 1024 ? `${(n / 1024).toFixed(1)} KB` : `${n} B`)
 
-const md: string[] = ['# Benchmark results', '']
+const md: string[] = [
+  '# Benchmark results',
+  '',
+  'All libraries use their in-memory store with the same limit and window.',
+  '',
+  "- express-rate-limit's `MemoryStore` only counts hits. The limit check lives in its middleware, so it never actually blocks here.",
+  '- rate-limiter-flexible and express-rate-limit return promises, and that cost is included.',
+  '- rate-limiter-flexible is bundled from `lib/RateLimiterMemory.js`, its smallest import.',
+  "- limiter doesn't support keys, so it's a `Map` of `RateLimiter`s.",
+  '- In the rotating keys test, keys are still tracked when they come back. A key that comes back after it has fully refilled was already dropped by limito and gets added again, which costs about 100 ns.',
+  '',
+]
 
 for (const runtime of ['node', 'bun']) {
   const file = `ops-${runtime}.json`

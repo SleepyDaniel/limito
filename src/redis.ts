@@ -1,6 +1,5 @@
-import { type BaseOptions, badCost, type Info, rate, waitFor } from './options.ts'
+import { type BaseOptions, type Info, type Key, rate, waitFor } from './options.ts'
 import { SCRIPT, SHA } from './script.ts'
-import type { Key } from './store.ts'
 
 export type Send = (args: [string, ...string[]]) => Promise<unknown>
 
@@ -24,7 +23,10 @@ export const limito = ({ send, prefix = 'limito:', ...opts }: RedisOptions): Red
   const l = String(lim)
 
   const run = async (key: Key, cost: number, mode: string) => {
-    if (!(cost >= 0)) badCost(cost)
+    if (!(cost >= 0)) throw new RangeError(`limito: bad cost ${cost}`)
+    if (typeof key !== 'string' && typeof key !== 'number') {
+      throw new TypeError('limito: key must be a string or number')
+    }
     const cmd: [string, ...string[]] = ['EVALSHA', SHA, '1', ns + key, s, l, String(cost), mode]
     let res: unknown
     try {
@@ -35,7 +37,7 @@ export const limito = ({ send, prefix = 'limito:', ...opts }: RedisOptions): Red
       cmd[1] = SCRIPT
       res = await send(cmd)
     }
-    if (!Array.isArray(res)) throw new TypeError(`limito: unexpected reply from send: ${res}`)
+    if (!Array.isArray(res)) throw new TypeError(`limito: bad reply from send: ${res}`)
     return res.map(Number) as [number, number, number]
   }
 

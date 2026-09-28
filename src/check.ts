@@ -1,6 +1,5 @@
 import { headers } from './headers.ts'
-import type { Info } from './options.ts'
-import type { Key } from './store.ts'
+import type { Info, Key } from './options.ts'
 
 export interface AnyLimiter {
   (key: Key): number | Promise<number>
@@ -11,9 +10,11 @@ export type KeyFn<T> = (x: T) => Key | undefined | Promise<Key | undefined>
 
 export const check = async (
   rl: AnyLimiter,
-  key: Key | undefined,
+  k: ReturnType<KeyFn<unknown>>,
 ): Promise<Record<string, string> | undefined> => {
+  const key = typeof k === 'object' ? await k : k
   if (key === undefined) throw new TypeError('limito: no key for this request, pass a key function')
-  const wait = await rl(key)
+  let wait = rl(key)
+  if (typeof wait !== 'number') wait = await wait
   if (wait) return headers(await rl.info(key), wait)
 }

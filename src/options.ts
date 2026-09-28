@@ -1,5 +1,7 @@
 import { type Duration, toMs } from './duration.ts'
 
+export type Key = string | number
+
 export interface BaseOptions {
   limit: number
   window: Duration
@@ -23,15 +25,13 @@ export interface Rate {
 
 export const rate = ({ limit, window, burst = Math.max(limit, 1) }: BaseOptions): Rate => {
   const win = toMs(window)
-  if (!(limit > 0 && win > 0 && limit < Infinity && win < Infinity && burst >= 1)) {
+  if (
+    !(limit > 0 && limit < Infinity && win > 0 && win < Infinity && burst >= 1 && burst < Infinity)
+  ) {
     throw new RangeError('limito: bad limit, window or burst')
   }
   const step = win / limit
   return { limit, win, burst, step, lim: burst * step + Math.min(1e-3, step * 1e-3) }
-}
-
-export const badCost = (cost: number): never => {
-  throw new RangeError(`limito: bad cost ${cost}`)
 }
 
 export const waitFor = async (wait: number | Promise<number>): Promise<void> => {

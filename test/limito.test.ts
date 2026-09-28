@@ -63,6 +63,20 @@ describe('limito', () => {
     expect(rl.info('a').remaining).toBe(5)
   })
 
+  it('rejects keys that are not strings or numbers', () => {
+    const rl = limito({ limit: 1, window: '1s' })
+    const key = ['a'] as never
+    expect(() => rl(key)).toThrow(TypeError)
+    expect(() => rl({} as never)).toThrow(TypeError)
+    expect(rl.size).toBe(0)
+  })
+
+  it('does not track free checks', () => {
+    const rl = limito({ limit: 1, window: '1s' })
+    for (let i = 0; i < 10; i++) expect(rl(i, 0)).toBe(0)
+    expect(rl.size).toBe(0)
+  })
+
   it('peek does not consume', () => {
     const rl = limito({ limit: 1, window: '1s' })
     expect(rl.peek('a')).toBe(0)
@@ -172,6 +186,7 @@ describe('limito', () => {
     expect(() => limito({ limit: 1, window: Infinity })).toThrow(RangeError)
     expect(() => limito({ limit: Infinity, window: '1s' })).toThrow(RangeError)
     expect(() => limito({ limit: 1, window: '1s', burst: 0.5 })).toThrow(RangeError)
+    expect(() => limito({ limit: 1, window: '1s', burst: Infinity })).toThrow(RangeError)
     expect(() => limito({ limit: 1, window: '1s', max: 0 })).toThrow(RangeError)
     expect(() => limito({ limit: Number.NaN, window: '1s' })).toThrow(RangeError)
   })

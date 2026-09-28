@@ -1,5 +1,13 @@
 # Benchmark results
 
+All libraries use their in-memory store with the same limit and window.
+
+- express-rate-limit's `MemoryStore` only counts hits. The limit check lives in its middleware, so it never actually blocks here.
+- rate-limiter-flexible and express-rate-limit return promises, and that cost is included.
+- rate-limiter-flexible is bundled from `lib/RateLimiterMemory.js`, its smallest import.
+- limiter doesn't support keys, so it's a `Map` of `RateLimiter`s.
+- In the rotating keys test, keys are still tracked when they come back. A key that comes back after it has fully refilled was already dropped by limito and gets added again, which costs about 100 ns.
+
 ## Throughput on Node 24.18.0
 
 Apple M5 (arm64-darwin)
@@ -79,7 +87,7 @@ Bundled with rolldown, minified, annotation comments stripped (same as size-limi
 
 | library | min | gzip | brotli |
 | --- | ---: | ---: | ---: |
-| limito | 2.0 KB | 1.1 KB | 994 B |
+| limito | 2.2 KB | 1.1 KB | 1.0 KB |
 | rate-limiter-flexible | 7.4 KB | 2.3 KB | 2.0 KB |
 | express-rate-limit | 42.0 KB | 12.8 KB | 11.3 KB |
 | limiter | 4.1 KB | 1.3 KB | 1.2 KB |
@@ -88,7 +96,7 @@ Bundled with rolldown, minified, annotation comments stripped (same as size-limi
 
 | library | version |
 | --- | --- |
-| limito | 0.3.0 |
+| limito | 0.4.0 |
 | rate-limiter-flexible | 11.2.1 |
 | express-rate-limit | 8.7.0 |
 | limiter | 4.1.0 |

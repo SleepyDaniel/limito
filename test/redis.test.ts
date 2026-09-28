@@ -27,6 +27,7 @@ it('rejects odd replies and bad cost', async () => {
   await expect(rl('a')).rejects.toThrow(TypeError)
   await expect(rl('a', -1)).rejects.toThrow(RangeError)
   await expect(rl.peek('a', Number.NaN)).rejects.toThrow(RangeError)
+  await expect(rl(['a'] as never)).rejects.toThrow(TypeError)
 })
 
 it('reserves a slot and sleeps once while waiting', async () => {

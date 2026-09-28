@@ -10,11 +10,14 @@ describe('toMs', () => {
     expect(toMs('.5m')).toBe(30_000)
     expect(toMs('2h')).toBe(7_200_000)
     expect(toMs('1d')).toBe(86_400_000)
+    expect(toMs('1e3ms')).toBe(1000)
+    expect(toMs('5.s')).toBe(5000)
   })
 
   it('throws on garbage', () => {
     expect(() => toMs('1 minute' as never)).toThrow(TypeError)
     expect(() => toMs('m' as never)).toThrow(TypeError)
+    expect(() => toMs('-5s')).toThrow(TypeError)
   })
 })
 

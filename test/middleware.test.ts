@@ -37,6 +37,18 @@ describe('hono', () => {
     expect((await make().request('/')).status).toBe(500)
   })
 
+  it('rejects array keys instead of giving each request a new bucket', async () => {
+    const app = new Hono()
+    app.use(honoLimit(limito({ limit: 1, window: '1m' }), async (c) => (await c.req.json()).email))
+    app.post('/', (c) => c.text('ok'))
+    const post = (email: unknown) =>
+      app.request('/', { method: 'POST', body: JSON.stringify({ email }) })
+    expect((await post('a@x.com')).status).toBe(200)
+    expect((await post('a@x.com')).status).toBe(429)
+    expect((await post(['a@x.com'])).status).toBe(500)
+    expect((await post(['a@x.com'])).status).toBe(500)
+  })
+
   it('works with async limiters and async keys', async () => {
     const replies = [
       [0, 0, 1000],

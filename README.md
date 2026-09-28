@@ -10,7 +10,7 @@
 
 <h1 align="center">limito</h1>
 
-Rate limiter for JavaScript. It's under 1 KB, has zero dependencies and works on Node, Bun, Deno, Cloudflare Workers and in the browser.
+Rate limiter for JavaScript. It's about 1 KB, has zero dependencies and works on Node, Bun, Deno, Cloudflare Workers and in the browser.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./bench/results/ops-node.dark.svg">
@@ -19,9 +19,9 @@ Rate limiter for JavaScript. It's under 1 KB, has zero dependencies and works on
 
 ## Why limito
 
-- **Fast:** on Node it's up to 3x faster than limiter and express-rate-limit and 6x or more faster than rate-limiter-flexible. See the [benchmarks](./bench/results/README.md).
+- **Fast:** on Node it's up to 3x faster than limiter and express-rate-limit, and 6-25x faster than rate-limiter-flexible. See the [benchmarks](./bench/results/README.md).
 - **Light on memory:** 38 to 63 bytes per key, 3 to 11 times less than the others.
-- **No timers, no garbage:** nothing runs in the background, and checking a known key doesn't allocate.
+- **No timers:** nothing runs in the background, and checking a known key doesn't allocate.
 - **Redis:** `limito/redis` shares limits between servers and works with any client.
 
 ## Install
@@ -58,7 +58,7 @@ for (const repo of repos) {
 }
 ```
 
-`wait()` resolves once the request fits, so you can also pace your calls to someone else's API. Waiters go through in the order they called, each after one sleep.
+`wait()` resolves once the request fits, so you can also pace your calls to someone else's API. It's not meant for incoming requests. The request counts as soon as you call it, even if the client is gone by then.
 
 ### Hono
 
@@ -74,7 +74,15 @@ const rl = limito({ limit: 100, window: '1m' })
 app.use(rateLimit(rl, (c) => ipKey(getConnInfo(c).remote.address)))
 ```
 
-The second argument picks the key. [`ipKey`](#ipkeyip) keys IPv6 clients by their /64. Not on Bun? Import `getConnInfo` from `hono/deno`, `hono/cloudflare-workers` or `@hono/node-server/conninfo` instead. Behind a proxy that address is the proxy's, so key on the header your proxy sets instead. If your app has typed variables, pass your env type to get a typed `c`: `rateLimit<AppEnv>(rl, (c) => c.get('user').id)`.
+The second argument picks the key. Not on Bun? Import `getConnInfo` from `hono/deno`, `hono/cloudflare-workers` or `@hono/node-server/conninfo` instead.
+
+Behind a proxy that address is the proxy's. Use a header your proxy sets, like `cf-connecting-ip` on Cloudflare or `x-real-ip` from nginx:
+
+```ts
+app.use(rateLimit(rl, (c) => ipKey(c.req.header('cf-connecting-ip'))))
+```
+
+This only works if clients can't reach the app directly. Don't key on `x-forwarded-for` as is, the first entry is whatever the client sent.
 
 ### Express
 
@@ -89,13 +97,13 @@ const rl = limito({ limit: 100, window: '1m' })
 app.use(rateLimit(rl))
 ```
 
-Limits by `ipKey(req.ip)`. Behind a proxy, set `trust proxy` to the number of proxies in front of your app, like `app.set('trust proxy', 1)`. Setting it to `true` lets clients pick their own IP with `X-Forwarded-For`. To limit by something else, pass a key function: `rateLimit(rl, (req) => req.get('x-api-key'))`.
+Limits by `ipKey(req.ip)`. Behind a proxy, set `trust proxy` to the number of proxies in front of your app, like `app.set('trust proxy', 1)`. Setting it to `true` lets clients pick their own IP with `X-Forwarded-For`. To limit by something else, pass a key function, like `rateLimit(rl, (req) => req.user.id)` after your auth middleware. Don't key on anything the client can change freely, like an unchecked `x-api-key` header.
 
-Blocked requests get a 429 with the `RateLimit`, `RateLimit-Policy` and `Retry-After` headers. If the key function returns `undefined`, the request fails with an error instead of sharing one bucket with everyone else. Both take the [Redis limiter](#redis) too. For your own response, call `rl()` and [`headers()`](#headersinfo-wait) yourself.
+Blocked requests get a 429 with the `RateLimit`, `RateLimit-Policy` and `Retry-After` headers. If the key function returns `undefined`, the request fails with an error instead of sharing one bucket with everyone else. Same for anything that isn't a string or number, like an array from a JSON body. Both take the [Redis limiter](#redis) too. For your own response, call `rl()` and [`headers()`](#headersinfo-wait) yourself.
 
 ### Redis
 
-If you run more than one server, use `limito/redis` so they all share the same limits.
+If you run more than one server, use `limito/redis` so they all share the same limits. You'll want it on Cloudflare Workers and serverless too, since each instance has its own memory.
 
 ```ts
 import { Redis } from 'ioredis'
@@ -111,7 +119,7 @@ const rl = limito({
 const wait = await rl('user:42')
 ```
 
-limito doesn't depend on any Redis client. `send` gets a command as an array of strings and runs it, so any client works:
+`send` gets a command as an array of strings and runs it, so any Redis client works:
 
 | client | `send` |
 | --- | --- |
@@ -120,8 +128,6 @@ limito doesn't depend on any Redis client. `send` gets a command as an array of 
 | Bun | `([cmd, ...args]) => redis.send(cmd, args)` |
 
 Same API as the in-memory limiter, just async and without `clear()` and `size`. The clock comes from Redis, so drift between your servers doesn't matter, and keys expire on their own once refilled.
-
-Limiters with different settings never share state, so a login limiter and an API limiter can both key on the user id. In Redis `7` and `'7'` are the same key.
 
 ### Burst and cost
 
@@ -146,7 +152,7 @@ uploads('user:42', 5)
 | `burst` | `number` | `limit` | requests allowed back to back, at least 1 |
 | `max` | `number` | `1_000_000` | most keys kept at once |
 
-Keys can be strings or numbers. When the store hits `max`, expired keys go first, then the oldest until it's 75% full. Oldest means first seen, not least recently used, so a blocked key can get dropped and start fresh. Set `max` well above the number of keys you expect.
+Keys can be strings or numbers. Anything else throws. When the store hits `max`, it drops expired keys, then the ones closest to being refilled, until it's 75% full. Blocked keys go last. Set `max` well above the number of keys you expect.
 
 | method | returns | |
 | --- | --- | --- |
@@ -167,15 +173,15 @@ Takes `limit`, `window` and `burst` like above, plus:
 | `send` | `(args: [string, ...string[]]) => Promise<unknown>` | | runs a raw Redis command |
 | `prefix` | `string` | `'limito:'` | keys are stored as `<prefix><window>/<limit>/<burst>:<key>` |
 
-`rl()`, `rl.peek()`, `rl.wait()`, `rl.info()` and `rl.reset()` work the same but return promises.
+`rl()`, `rl.peek()`, `rl.wait()`, `rl.info()` and `rl.reset()` work the same but return promises. Limiters with different settings get different Redis keys, so a login limiter and an API limiter can both key on the user id. `7` and `'7'` are the same key here, but not in memory.
 
 ### `rateLimit(rl, key)` from `limito/hono` and `limito/express`
 
-Takes any limito limiter and a function that returns the key for a request, or a promise of it. In Express `key` is optional and defaults to `ipKey(req.ip)`.
+Takes any limito limiter and a function that returns the key for a request, or a promise of it. In Express `key` is optional and defaults to `ipKey(req.ip)`. In Hono, pass your env type to get a typed `c`: `rateLimit<AppEnv>(rl, (c) => c.get('user').id)`.
 
 ### `ipKey(ip)`
 
-Returns IPv4 addresses as they are and IPv6 addresses as their /64 network, like `2001:db8:0:0::/64`. Most IPv6 users get at least a /64, so without this they could rotate addresses and never hit the limit. Some hosts put several customers in one /64, and they share a limit. IPv4-mapped addresses like `::ffff:1.2.3.4` become `1.2.3.4`, `undefined` stays `undefined` and anything malformed comes back unchanged.
+Returns IPv4 addresses as they are and IPv6 addresses as their /64 network, like `2001:db8:0:0::/64`, since one IPv6 user usually has a whole /64 to rotate through. Some ISPs hand out a /56 or /48, so for logins add a second, looser limiter on a shorter prefix. `::ffff:1.2.3.4` becomes `1.2.3.4`, and anything malformed comes back unchanged.
 
 ### `headers(info, wait?)`
 
@@ -193,13 +199,13 @@ headers(rl.info('user:42'), wait)
 
 Instead of counting requests, GCRA (generic cell rate algorithm) stores one timestamp per key: the time when that key will have its full allowance back. Every request moves it forward by `window / limit`. If that pushes it more than `burst` steps past now, the request is rejected and the difference is how long to wait.
 
-Keys go in a `Map` that points to a slot in a `Float64Array`. The slot numbers are small ints, which V8 doesn't box, and the timestamps live in the typed array, so updating a key doesn't allocate. When the array fills up, or once per burst window, limito rebuilds it: expired keys are dropped, the array grows or shrinks, and the oldest keys go if it's at `max`.
+Keys go in a `Map` that points to a slot in a `Float64Array`. The slot numbers are small ints, which V8 doesn't box, and the timestamps live in the typed array, so updating a key doesn't allocate. Freed slots get reused. When the array fills up, or once per burst window, limito drops expired keys and grows or shrinks the array. At `max` it also drops the keys closest to being refilled. It finds the cutoff by sorting a sample of about 4,000 keys instead of all of them.
 
 `limito/redis` runs the same math as a Lua script. The whole check happens inside Redis in one call, so two servers can't read the same value and both let a request through.
 
 ## Benchmarks
 
-Run on an Apple M5 with Node 24.18 and Bun 1.4.2. All the tables are in [bench/results](./bench/results/README.md).
+Run on an Apple M5 with Node 24.18 and Bun 1.4.2. All libraries use their in-memory store with the same limit and window. The full tables and setup notes are in [bench/results](./bench/results/README.md).
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./bench/results/memory.dark.svg">
@@ -215,10 +221,6 @@ Run on an Apple M5 with Node 24.18 and Bun 1.4.2. All the tables are in [bench/r
   <source media="(prefers-color-scheme: dark)" srcset="./bench/results/ops-bun.dark.svg">
   <img alt="Throughput on Bun" src="./bench/results/ops-bun.svg">
 </picture>
-
-All libraries use their in-memory store with the same limit and window. express-rate-limit's `MemoryStore` only counts hits (the limit check lives in its middleware), so it never actually blocks here. rate-limiter-flexible and express-rate-limit return promises, so that cost is included. rate-limiter-flexible is bundled from `lib/RateLimiterMemory.js`, its smallest import. limiter doesn't support keys, so it's a `Map` of `RateLimiter`s.
-
-In the rotating keys test, keys are still tracked when they come back. A key that comes back after it has fully refilled was already dropped by limito and gets added again, which costs about 100 ns.
 
 To run them yourself:
 

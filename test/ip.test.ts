@@ -35,6 +35,8 @@ it('leaves malformed addresses alone', () => {
     '::1:2:3:4:5:6:7:8',
     '::ffff:999.1.1.1',
     '::ffff:1.300.3.4',
+    '1:2:3:4:5:6:7:',
+    ':1::2',
   ])
     expect(ipKey(bad)).toBe(bad)
 })
